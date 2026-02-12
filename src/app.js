@@ -1,10 +1,16 @@
 import {
   addArt,
-  getAllArts,
+  getApprovedArts,
   getArtById,
   getSavedWithinDays,
   saveArtForLater,
   removeSavedArt,
+  recordSale,
+  getSalesSummary,
+  getSales,
+  getPendingArts,
+  approveArt,
+  rejectArt,
 } from "./services.artService.js";
 
 const DAYS_WINDOW = 15;
@@ -24,7 +30,7 @@ function createButton(label, className, onClick) {
 function renderArtistCollection() {
   const container = $("#artist-collection");
   container.innerHTML = "";
-  getAllArts().forEach((art) => {
+  getApprovedArts().forEach((art) => {
     const li = document.createElement("li");
     li.className = "card";
     const main = document.createElement("div");
@@ -48,7 +54,7 @@ function renderArtistCollection() {
 function renderMarketplace() {
   const container = $("#marketplace-list");
   container.innerHTML = "";
-  getAllArts().forEach((art) => {
+  getApprovedArts().forEach((art) => {
     const li = document.createElement("li");
     li.className = "card";
     const main = document.createElement("div");
@@ -161,8 +167,110 @@ function showSelectedArt(artId) {
 function simulatePayment(artId) {
   const art = getArtById(artId);
   if (!art) return;
+  const sale = recordSale(artId);
   console.log("[PAYMENT] simulated payment for art", art);
   alert(`Payment simulated for "${art.title}"`);
+  renderMarketplace();
+  renderSaved();
+  renderAnalytics();
+  if (sale) {
+    updateStatus(`Last action: sale recorded for "${sale.title}".`);
+  }
+}
+
+function renderAnalytics() {
+  const summaryEl = $("#artist-sales-summary");
+  const listEl = $("#artist-sales-list");
+  if (!summaryEl || !listEl) return;
+
+  const summary = getSalesSummary();
+  summaryEl.textContent = `Total sales: ${summary.totalCount} · Total revenue: $${summary.totalRevenue}`;
+
+  const byDayLines = Object.entries(summary.byDay)
+    .sort(([a], [b]) => (a < b ? -1 : 1))
+    .map(([day, data]) => `${day} – ${data.count} sale(s), $${data.revenue}`)
+    .join(" | ");
+
+  if (byDayLines) {
+    summaryEl.textContent += ` · By day: ${byDayLines}`;
+  }
+
+  listEl.innerHTML = "";
+  const sales = getSales();
+  sales
+    .slice()
+    .sort((a, b) => (a.soldAt < b.soldAt ? 1 : -1))
+    .forEach((sale) => {
+      const li = document.createElement("li");
+      li.className = "card";
+      const main = document.createElement("div");
+      main.className = "card-main";
+      const title = document.createElement("div");
+      title.className = "card-title";
+      title.textContent = sale.title;
+      const meta = document.createElement("div");
+      meta.className = "card-meta";
+      meta.textContent = `Sold at: ${new Date(
+        sale.soldAt,
+      ).toLocaleString()} · Amount: $${sale.amount}`;
+      main.appendChild(title);
+      main.appendChild(meta);
+      li.appendChild(main);
+      listEl.appendChild(li);
+    });
+}
+
+function renderAdmin() {
+  const container = $("#admin-pending-list");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const pending = getPendingArts();
+  if (pending.length === 0) {
+    const p = document.createElement("p");
+    p.className = "card-meta";
+    p.textContent = "No pending arts.";
+    container.appendChild(p);
+    return;
+  }
+
+  pending.forEach((art) => {
+    const li = document.createElement("li");
+    li.className = "card";
+    const main = document.createElement("div");
+    main.className = "card-main";
+    const title = document.createElement("div");
+    title.className = "card-title";
+    title.textContent = art.title;
+    const meta = document.createElement("div");
+    meta.className = "card-meta";
+    meta.textContent = `Price: $${art.price} · Stock: ${art.stock}`;
+    main.appendChild(title);
+    main.appendChild(meta);
+
+    const actions = document.createElement("div");
+    actions.appendChild(
+      createButton("Approve", "btn primary", () => {
+        approveArt(art.id);
+        renderAdmin();
+        renderMarketplace();
+        renderArtistCollection();
+        updateStatus(`Last action: "${art.title}" approved.`);
+      }),
+    );
+    actions.appendChild(
+      createButton("Reject", "btn danger", () => {
+        const reason = prompt("Reason for rejection? (optional)") || "";
+        rejectArt(art.id, reason);
+        renderAdmin();
+        updateStatus(`Last action: "${art.title}" rejected.`);
+      }),
+    );
+
+    li.appendChild(main);
+    li.appendChild(actions);
+    container.appendChild(li);
+  });
 }
 
 function openModal() {
@@ -203,6 +311,8 @@ function init() {
   renderArtistCollection();
   renderMarketplace();
   renderSaved();
+  renderAnalytics();
+  renderAdmin();
 }
 
 document.addEventListener("DOMContentLoaded", init);

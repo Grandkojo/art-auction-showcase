@@ -1,10 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   addArt,
-  getAllArts,
   saveArtForLater,
   getSavedWithinDays,
   removeSavedArt,
+  getApprovedArts,
+  getPendingArts,
+  approveArt,
+  rejectArt,
+  recordSale,
+  getSales,
+  getSalesSummary,
 } from "../src/services.artService.js";
 
 const mockStorage = (() => {
@@ -38,7 +44,7 @@ describe("artService", () => {
       stock: 2,
     });
     expect(art.title).toBe("Test Art");
-    expect(getAllArts()).toHaveLength(1);
+    expect(getPendingArts()).toHaveLength(1);
   });
 
   it("saves art and returns only items within last 15 days", () => {
@@ -65,6 +71,43 @@ describe("artService", () => {
     expect(getSavedWithinDays(15)).toHaveLength(1);
     removeSavedArt(art.id);
     expect(getSavedWithinDays(15)).toHaveLength(0);
+  });
+
+  it("approves and rejects art correctly", () => {
+    const art = addArt({
+      title: "Moderate Me",
+      imageUrl: "http://example.com/img.jpg",
+      price: 20,
+      stock: 1,
+    });
+    expect(getPendingArts()).toHaveLength(1);
+    approveArt(art.id);
+    expect(getPendingArts()).toHaveLength(0);
+    expect(getApprovedArts()).toHaveLength(1);
+
+    // Rejecting moves it out of approved
+    rejectArt(art.id, "Not suitable");
+    expect(getApprovedArts()).toHaveLength(0);
+  });
+
+  it("records sales and computes summary", () => {
+    const art = addArt({
+      title: "For Sale",
+      imageUrl: "http://example.com/img.jpg",
+      price: 50,
+      stock: 2,
+    });
+    approveArt(art.id);
+
+    recordSale(art.id);
+    recordSale(art.id);
+
+    const sales = getSales();
+    expect(sales).toHaveLength(2);
+
+    const summary = getSalesSummary();
+    expect(summary.totalCount).toBe(2);
+    expect(summary.totalRevenue).toBe(100);
   });
 });
 
