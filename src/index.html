@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Art Auction Showcase</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1>Art Auction Showcase</h1>
+      <p class="subtitle">
+        Simple demo app to practice Agile and DevOps.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel" id="artist-panel">
+        <h2>Artist</h2>
+        <button id="open-add-art-modal" class="btn primary">Add Art</button>
+        <h3>Your Collection</h3>
+        <ul id="artist-collection" class="card-list"></ul>
+      </section>
+
+      <section class="panel" id="marketplace-panel">
+        <h2>Marketplace</h2>
+        <ul id="marketplace-list" class="card-list"></ul>
+        <div id="selected-art" class="selected-art hidden"></div>
+      </section>
+
+      <section class="panel" id="saved-panel">
+        <h2>Saved in Last 15 Days</h2>
+        <ul id="saved-list" class="card-list"></ul>
+      </section>
+    </main>
+
+    <section class="panel" id="status-panel">
+      <h2>System Status & Logs</h2>
+      <p id="status-text">OK</p>
+    </section>
+
+    <div id="add-art-modal" class="modal hidden">
+      <div class="modal-content">
+        <h2>Add Art</h2>
+        <form id="add-art-form">
+          <label>
+            Title
+            <input type="text" id="art-title" required />
+          </label>
+          <label>
+            Image URL
+            <input type="url" id="art-image" required />
+          </label>
+          <label>
+            Price
+            <input type="number" id="art-price" min="0" step="0.01" required />
+          </label>
+          <label>
+            Stock Quantity
+            <input type="number" id="art-stock" min="1" step="1" required />
+          </label>
+          <div class="modal-actions">
+            <button type="submit" class="btn primary">Save</button>
+            <button type="button" id="close-add-art-modal" class="btn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+  </html>
+

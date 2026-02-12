@@ -1,0 +1,78 @@
+PRODUCT VISION
+i want to create a website where people(artist) can showcase their arts for interested parties
+to buy when auctioned
+
+PRODUCTS BACKLOG
+One
+As an artist,
+I want to be able to add my art to showcase,
+So that others can view and submit a proposal to buy.
+
+*acceptance criteria
+> a modal to add art images, stock quantity and prices
+> view  art as part of artist's collection
+
+*story points - 1
+--------------------------------------------------------------------------------------
+
+Two
+As an interested party,
+I want to be able to see the list of all arts,
+So that i can select my preferred choice to buy.
+
+*acceptance criteria
+> page that shows all published arts with prices and stock quantity
+> page that shows a specific art with related detail when selected
+> button to make payment when interested party is ready to buy
+
+*story points - 2
+---------------------------------------------------------------------------------------
+
+Three
+As an artist,
+I want to be able to view all my past sales/auctions.
+So that i can evaluate my sales and how i'm doing in the business.
+
+*acceptance criteria
+> graphs and statistics that shows artist's total sales, revenue since joined the app
+> list of all individual sale with timestamp for analysis
+
+*story points - 1
+----------------------------------------------------------------------------------------
+
+Four
+As an interested party,
+i want to be able to see all arts i've saved in the past 15 days,
+So i can easily find the art to purchase when i make the decision
+
+*acceptance criteria
+> page to see saved arts in the last 15 days
+> button to remove existing saved arts
+> button to make payment when i'm ready
+
+*story points - 1
+-----------------------------------------------------------------------------------------
+
+Five
+As an admin,
+I want to manage the type of arts published for showcase,
+So i can regulate the arts according to the apps' rules for arts publication
+
+*acceptance criteria
+> view all arts submitted by artists for approval before published
+> button to approve submitted arts
+> button to reject or reject with reason for a submitted art
+> flag rejected artist arts to monitor violation counts for sanctions when needed
+
+*story points - 3
+
+
+DEFINITION OF DONE - When tests written for a developed features all pass
+
+SPRINT 1
+One, Two, Four
+
+SPRINT 2
+Three, Five
+
+can i generate a simple sprint review document from jira

@@ -1,0 +1,19 @@
+{
+  "name": "agile_devops",
+  "version": "1.0.0",
+  "description": "Simple art showcase website used to demonstrate Agile and DevOps practices over two sprints.",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "keywords": [
+    "agile",
+    "devops",
+    "art-showcase"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "vitest": "^4.0.18"
+  }
+}
